@@ -1,4 +1,6 @@
-# Authored by Tiantian Liu, Taichi Graphics.
+# Based on nbody demo by Tiantian Liu, Taichi Graphics.
+# https://github.com/taichi-dev/taichi/blob/master/python/taichi/examples/simulation/nbody.py
+
 import math, os
 
 import taichi as ti
@@ -30,7 +32,7 @@ planet_radius = ti.field(ti.f32, (N))
 init_vel = 100
 
 # time-step size
-h = 1e-5
+h = 2e-5
 # substepping
 substepping = 10
 
