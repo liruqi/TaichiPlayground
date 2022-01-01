@@ -1,5 +1,5 @@
 # Authored by Tiantian Liu, Taichi Graphics.
-import math
+import math, os
 
 import taichi as ti
 import numpy as np
@@ -100,8 +100,17 @@ gui = ti.GUI('3-body problem', (1000, 1000))
 initialize()
 im = cv2.imread("res/galaxy.png")
 print (im.shape)
-while gui.running:
 
+result_dir = "./results"
+video_manager = None
+if os.path.exists(result_dir):
+    video_manager = ti.VideoManager(output_dir=result_dir, framerate=24, automatic_build=False)
+
+cnt = 0
+while gui.running:
+    if video_manager and cnt > 1000:
+        break
+    cnt += 1
     for e in gui.get_events(ti.GUI.PRESS):
         if e.key in [ti.GUI.ESCAPE, ti.GUI.EXIT]:
             exit()
@@ -117,4 +126,16 @@ while gui.running:
 
     gui.set_image(im)
     gui.circles(pos.to_numpy(), color=np.array([0xea5a3e, 0x00ecff, 0xffffff]), radius=planet_radius.to_numpy())
-    gui.show()
+
+    if video_manager:
+        pixels_img = gui.get_image()
+        video_manager.write_frame(pixels_img)
+    else:
+        gui.show()
+
+if video_manager:
+    print('Exporting .mp4 and .gif videos...')
+    video_manager.make_video(gif=True, mp4=True)
+    print(f'MP4 video is saved to {video_manager.get_output_filename(".mp4")}')
+    print(f'GIF video is saved to {video_manager.get_output_filename(".gif")}')
+
