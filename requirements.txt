@@ -1,0 +1,2 @@
+taichi
+opencv-python
